@@ -3,7 +3,7 @@ import { db, auth } from '../config/firebase';
 import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, updateDoc, doc, setDoc ,deleteDoc} from 'firebase/firestore';
 
 import { createUserWithEmailAndPassword } from 'firebase/auth'; // Auth function add kiya
-
+import ManageTasks from './ManageTasks'; // Import statement add karein
 export default function AdminDashboard() {
   // === STATES ===
   // task state se empCode aur department hata diya gaya hai
@@ -19,11 +19,17 @@ export default function AdminDashboard() {
   const [filterStatus, setFilterStatus] = useState('All');
   const [isLoggedIn, setIsLoggedIn] = useState(true); // Default true kyunki admin dashboard hai
 
+  const [archiveData, setArchiveData] = useState([]);
+const [pendingData, setPendingData] = useState([]);
+
+
   // === FETCH REAL-TIME DATA ===
-// === FETCH REAL-TIME DATA ===
+
+
+
 
 // useEffect(() => {
-
+//   // 1. Archive tasks se "History" aur "Completed Status" fetch karein
 //   const qArchive = query(collection(db, "archive_tasks"), orderBy("assignedAt", "desc"));
   
 //   const unsub = onSnapshot(qArchive, (snapshot) => {
@@ -31,51 +37,108 @@ export default function AdminDashboard() {
 //       id: doc.id,
 //       ...doc.data()
 //     }));
-//     setTasksList(archivedTasks); 
+
+//     // 2. IMPORTANT: Pending tasks ke liye 'tasks' collection se real-time status fetch karein
+//     const qPending = query(collection(db, "tasks"));
+//     onSnapshot(qPending, (pendingSnapshot) => {
+//       const pendingTasks = pendingSnapshot.docs.map(doc => ({
+//         id: doc.id,
+//         ...doc.data()
+//       }));
+
+//       // 3. Merge Logic: Agar task 'tasks' collection mein hai, toh uska latest status use karo
+//       const finalTasks = archivedTasks.map(archiveTask => {
+//         const matchingPending = pendingTasks.find(p => p.email === archiveTask.email && p.title === archiveTask.title);
+//         return matchingPending ? { ...archiveTask, status: matchingPending.status, remarks: matchingPending.remarks } : archiveTask;
+//       });
+
+//       setTasksList(finalTasks); // Ye list Admin ko perfect update dikhayegi
+//     });
 //   });
+
+  
 
 //   return () => unsub();
 // }, []);
 
 
 
+// useEffect(() => {
+//   // 1. Archive tasks se "History" aur "Completed Status" fetch karein
+//   const qArchive = query(collection(db, "archive_tasks"), orderBy("assignedAt", "asc"));
+  
+//   const unsubTasks = onSnapshot(qArchive, (snapshot) => {
+//     const archivedTasks = snapshot.docs.map(doc => ({
+//       id: doc.id,
+//       ...doc.data()
+//     }));
+
+//     // 2. IMPORTANT: Pending tasks ke liye 'tasks' collection se real-time status fetch karein
+//     const qPending = query(collection(db, "tasks"));
+//     onSnapshot(qPending, (pendingSnapshot) => {
+//       const pendingTasks = pendingSnapshot.docs.map(doc => ({
+//         id: doc.id,
+//         ...doc.data()
+//       }));
+
+//       // 3. Merge Logic: Agar task 'tasks' collection mein hai, toh uska latest status use karo
+//       const finalTasks = archivedTasks.map(archiveTask => {
+//         const matchingPending = pendingTasks.find(p => p.email === archiveTask.email && p.title === archiveTask.title);
+//         return matchingPending ? { ...archiveTask, status: matchingPending.status, remarks: matchingPending.remarks } : archiveTask;
+//       });
+
+//       setTasksList(finalTasks); // Ye list Admin ko perfect update dikhayegi
+//     });
+//   });
+
+//   // 4. Registered Employees ka list fetch karein (taaki Table mein show ho)
+//   const qUsers = query(collection(db, "employees"));
+//   const unsubUsers = onSnapshot(qUsers, (snapshot) => {
+//     const fetchedEmployees = snapshot.docs.map(doc => ({
+//       id: doc.id,
+//       ...doc.data()
+//     }));
+//     console.log("employees Data:", fetchedEmployees);
+//     setEmployeesList(fetchedEmployees); // Ye line aapke table mein data show kar degi
+//   });
+
+//   // Cleanup: Component unmount hote hi saare listeners band ho jayenge
+//   return () => {
+//     unsubTasks();
+//     unsubUsers();
+//   };
+// }, []);
+
+
 
 
 useEffect(() => {
-  // 1. Archive tasks se "History" aur "Completed Status" fetch karein
-  const qArchive = query(collection(db, "archive_tasks"), orderBy("assignedAt", "desc"));
-  
-  const unsub = onSnapshot(qArchive, (snapshot) => {
-    const archivedTasks = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    // 2. IMPORTANT: Pending tasks ke liye 'tasks' collection se real-time status fetch karein
-    const qPending = query(collection(db, "tasks"));
-    onSnapshot(qPending, (pendingSnapshot) => {
-      const pendingTasks = pendingSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-
-      // 3. Merge Logic: Agar task 'tasks' collection mein hai, toh uska latest status use karo
-      const finalTasks = archivedTasks.map(archiveTask => {
-        const matchingPending = pendingTasks.find(p => p.email === archiveTask.email && p.title === archiveTask.title);
-        return matchingPending ? { ...archiveTask, status: matchingPending.status, remarks: matchingPending.remarks } : archiveTask;
-      });
-
-      setTasksList(finalTasks); // Ye list Admin ko perfect update dikhayegi
-    });
+  // 1. Archive Tasks Listener
+  const unsubArchive = onSnapshot(query(collection(db, "archive_tasks"), orderBy("assignedAt", "asc")), (snapshot) => {
+    setArchiveData(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   });
 
-  return () => unsub();
+  // 2. Pending Tasks Listener
+  const unsubPending = onSnapshot(query(collection(db, "tasks")), (snapshot) => {
+    setPendingData(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  });
+
+  // 3. Employees Listener
+  const unsubUsers = onSnapshot(query(collection(db, "employees")), (snapshot) => {
+    setEmployeesList(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  });
+
+  return () => { unsubArchive(); unsubPending(); unsubUsers(); };
 }, []);
 
-
-
-
-
+// 4. Merge Logic: Jab bhi data badle, list update ho
+useEffect(() => {
+  const merged = archiveData.map(archiveTask => {
+    const matchingPending = pendingData.find(p => p.email === archiveTask.email && p.title === archiveTask.title);
+    return matchingPending ? { ...archiveTask, status: matchingPending.status, remarks: matchingPending.remarks, lastAction: matchingPending.lastAction } : archiveTask;
+  });
+  setTasksList(merged);
+}, [archiveData, pendingData]);
 
 
 
@@ -267,13 +330,25 @@ const assignTask = async (e) => {
           <button
             onClick={() => setActiveTab('settings')}
             className={`w-full text-left p-3 rounded-lg font-medium transition-all duration-300
-  ${activeTab === 'settings'
+          ${activeTab === 'settings'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
                 : 'text-slate-300 hover:bg-blue-500/40 hover:text-blue-300'
               }`}
           >
             Employee Accounts
           </button>
+
+
+
+
+          <button 
+    onClick={() => setActiveTab('delete-tasks')} // Naya tab name
+    className={`w-full text-left p-3 rounded-lg font-medium transition-all duration-300   ${activeTab === 'delete-tasks' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
+                : 'text-slate-300 hover:bg-blue-500/40 hover:text-blue-300'}`}
+  >
+    Manage Tasks
+  </button> 
+          
         <button
   onClick={handleLogout}
   className="mt-auto w-full text-left p-3 text-red-400 text-sm font-semibold
@@ -282,6 +357,12 @@ const assignTask = async (e) => {
 >
   Logout
 </button>
+
+
+
+
+
+
 
         </nav>
       </aside>
@@ -300,6 +381,15 @@ const assignTask = async (e) => {
         </header>
 
         {/* DASHBOARD TAB */}
+
+
+        {/* {activeTab === 'delete-tasks' && <ManageTasks />} */}
+
+
+
+
+  {activeTab === 'delete-tasks' && <ManageTasks tasksList={tasksList} />}
+        
         {activeTab === 'dashboard' && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-3">
@@ -636,6 +726,7 @@ const assignTask = async (e) => {
   )}
 </tbody>
               </table>
+              
             </div>
           </div>
         )}

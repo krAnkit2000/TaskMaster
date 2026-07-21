@@ -115,29 +115,11 @@ export default function UserTaskView() {
     window.location.href = "/";
   };
 
+  
 
-  //all test task delete screte btn 
-  // 1. Ek secret function banayein
-// 1. Apne function ko component ke andar define karein
-const secretClearAll = async () => {
-  const password = prompt("Enter Admin Password:");
-  if (password === "1234") {
-    const q = query(collection(db, "tasks"), where("email", "==", loginCred.email));
-    const snapshot = await getDocs(q);
-    
-    // 1. Firebase se delete karein
-    await Promise.all(snapshot.docs.map(taskDoc => deleteDoc(doc(db, "tasks", taskDoc.id))));
-    
-    // 2. LocalStorage se clear karein (ZAROORI)
-    const storageKey = `userPermanentTasks_${loginCred.email}`;
-    localStorage.removeItem(storageKey); 
-    
-    // 3. UI state ko empty kar dein
-    setTasks([]); 
-    
-    alert("Saare tasks clear ho gaye!");
-  }
-};
+
+
+  
 // 2. Button ko table ke neeche place karein (Yahan button dikhega)
 
 
@@ -154,16 +136,7 @@ const secretClearAll = async () => {
           <button onClick={() => setView('myTasks')} className={`w-full text-left p-3 rounded-lg text-sm font-semibold transition ${view === 'myTasks' ? 'bg-blue-600' : 'text-gray-400 hover:text-white'}`}>My Tasks</button>
           <button onClick={handleLogout} className="w-full text-left p-3 text-red-400 text-sm font-semibold hover:bg-red-900/20 rounded-lg transition">Logout</button>
        
-     {/* All task  clear btn */}
-       <button
-  onClick={secretClearAll}
-  disabled={true}
-  className="w-full text-left p-3 text-red-400 text-sm font-semibold
-  hover:bg-red-900/80 rounded-lg transition
-  disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
->
-  Clear All Data
-</button>
+    
         </div>
         
       </div>
