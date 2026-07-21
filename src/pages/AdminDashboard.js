@@ -1083,10 +1083,13 @@ export default function AdminDashboard() {
 
       {/* SIDEBAR */}
       <aside className="w-64 bg-slate-900 text-white flex flex-col shadow-xl z-10">
+       <a href="/" className="block cursor-pointer">
+      
         <div className="p-6 text-2xl font-bold border-b border-slate-800 tracking-wider flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white text-lg">T</div>
           TaskMaster
         </div>
+        </a>
         <nav className="flex-1 p-4 space-y-2">
           <button
             onClick={() => setActiveTab('dashboard')}

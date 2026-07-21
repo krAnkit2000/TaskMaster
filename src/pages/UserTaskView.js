@@ -13,7 +13,7 @@ export default function UserTaskView() {
   useEffect(() => {
     if (isLoggedIn && loginCred.email) {
       // 1. Page load hote hi Local Storage se purane tasks uthayein
-      // User ke email ke hisaab se alag key banayi hai, taaki doosre user ke task mix na hon
+    
       const storageKey = `userPermanentTasks_${loginCred.email}`;
       const savedTasks = JSON.parse(localStorage.getItem(storageKey)) || [];
       setTasks(savedTasks);
@@ -126,11 +126,14 @@ export default function UserTaskView() {
   return (
     <div className="min-h-screen bg-gray-50 flex font-sans">
       {/* Sidebar */}
+   
       <div className="w-64 bg-slate-900 text-white p-6">
+           <a href="/" className="block cursor-pointer">
         <div className="p-1 mb-12 text-2xl font-bold border-b border-slate-800 tracking-wider flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white text-lg">T</div>
           TaskMaster
         </div>
+        </a>
         <div className="space-y-4">
           <button onClick={() => setView('overview')} className={`w-full text-left p-3 rounded-lg text-sm font-semibold transition ${view === 'overview' ? 'bg-blue-600' : 'text-gray-400 hover:text-white'}`}>Dashboard Overview</button>
           <button onClick={() => setView('myTasks')} className={`w-full text-left p-3 rounded-lg text-sm font-semibold transition ${view === 'myTasks' ? 'bg-blue-600' : 'text-gray-400 hover:text-white'}`}>My Tasks</button>
