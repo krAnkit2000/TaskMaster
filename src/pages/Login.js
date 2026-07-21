@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { db } from '../config/firebase';
 // Firebase firestore methods import karein
 import { collection, query, where, getDocs } from 'firebase/firestore'; 
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,8 +11,8 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(''); // Naya login attempt hone par purana error hata dein
-
+    // setError(''); 
+toast.error('');
     try {
       // 1. Database mein 'users' collection ko target karein
       const usersRef = collection(db, 'employees');
@@ -28,7 +29,10 @@ export default function Login() {
 
       // 4. Agar result empty hai, matlab admin ne ye user nahi banaya ya password galat hai
       if (querySnapshot.empty) {
-        setError('Invalid email or password. Only admin-approved users can log in.');
+        const msg="Invalid email or password. Only admin-approved users can log in."
+      //  setError(msg);
+toast.error(msg);
+
         return; // Yahan se function rok dein, aage code run nahi hoga
       }
 
@@ -39,8 +43,10 @@ export default function Login() {
       window.location.reload(); 
       
     } catch (err) {
+      const msg="Something went wrong. Please try again."
       console.error("Login Error: ", err);
-      setError('Something went wrong. Please try again.');
+      // setError(msg);
+      toast.error(msg);
     }
   };
 

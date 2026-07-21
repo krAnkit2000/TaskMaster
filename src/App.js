@@ -14,7 +14,7 @@ export default function App() {
   return (
     
     <BrowserRouter>
-    <Toaster position="top-right"  autoClose={3000}/>
+    <Toaster position="top-right"  autoClose={4000}/>
       <Routes>
         {/* 1. Default Route (/) - Login check aur redirect */}
         <Route path="/" element={

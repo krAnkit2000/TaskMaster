@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { db, auth, googleProvider } from '../config/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-
+import toast from "react-hot-toast";
 export default function AdminLogin() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState(''); // 1. Naya state Name ke liye
@@ -26,8 +26,8 @@ export default function AdminLogin() {
           department: role,
           createdAt: new Date()
         });
-        
-        alert("Account Created! Now click Login to enter.");
+         toast.success("Account Created! Now click Login to enter")
+        // alert("Account Created! Now click Login to enter.");
         setIsSignUp(false); 
         setName(''); // Form clear karne ke liye
         setEmail('');
@@ -44,15 +44,16 @@ export default function AdminLogin() {
             localStorage.setItem('userCred', JSON.stringify({ role: userData.role }));
             window.location.href = "/admin";
           } else {
-            alert("Access Denied: You are not an Admin.");
+            toast.error("Access Denied: You are not an Admin.");
           }
         }
       }
     } catch (err) {
-      console.error(err);
-      alert("Error: " + err.message);
+     
+      toast.error("Error: " + err.message);
     }
   };
+
 
   const handleGoogleLogin = async () => {
     try {
@@ -68,7 +69,7 @@ export default function AdminLogin() {
           localStorage.setItem('userCred', JSON.stringify({ role: userData.role }));
           window.location.href = "/admin";
         } else {
-          alert("Access Denied: You do not have admin privileges.");
+          toast.error("Access Denied: You do not have admin privileges.");
         }
       } else {
         // Google se naya user aane par uska naam bhi save kar rahe hain
@@ -84,8 +85,8 @@ export default function AdminLogin() {
         window.location.href = "/admin";
       }
     } catch (err) {
-      console.error("Google Login Error:", err);
-      alert("Google Login Failed: " + err.message);
+      // console.error("Google Login Error:", err);
+      toast.error("Google Login Failed: " + err.message);
     }
   };
 
