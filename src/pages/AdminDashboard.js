@@ -849,7 +849,7 @@ import {
 } from 'firebase/firestore';
 import { initializeApp, deleteApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signOut } from 'firebase/auth';
-
+import toast from "react-hot-toast";
 export default function AdminDashboard() {
   // === STATES ===
   const [task, setTask] = useState({ empName: '', title: '', email: '', desc: '', priority: 'Normal' });
@@ -960,7 +960,7 @@ export default function AdminDashboard() {
       setTask({ empName: '', title: '', email: '', desc: '', priority: 'Normal' });
       setLoading(false);
       setActiveTab('dashboard');
-      alert("Task assigned successfully!");
+    toast.success("Task assigned successfully!");
 
     } catch (error) {
       console.error("Error adding task: ", error);
@@ -993,10 +993,11 @@ export default function AdminDashboard() {
         createdBy: currentAdminUid, // ✅ Kis admin ne banaya
       });
 
-      alert(`Account Created for ${empCred.name}!`);
+      toast.success(`Account Created for ${empCred.name}!`);
       setEmpCred({ code: '', department: '', name: '', email: '', password: '' });
     } catch (error) {
-      alert("Failed to create account: " + error.message);
+      toast.error("Failed to create account." + error.message);
+      // alert("Failed to create account: " + error.message);
     } finally {
       // Secondary app se signout aur cleanup - MAIN admin session untouched rahega
       await signOut(secondaryAuth);
@@ -1024,13 +1025,14 @@ export default function AdminDashboard() {
         role: roleType,
         status: 'Active',
         createdAt: serverTimestamp(),
-        createdBy: currentAdminUid, // ✅ Kis admin ne banaya
+        createdBy: currentAdminUid, 
       });
 
-      alert(`${roleType.toUpperCase()} Account Created for ${empCred.name}!`);
+      toast.success(`${roleType.toUpperCase()} Account Created for ${empCred.name}!`);
       setEmpCred({ code: '', department: '', name: '', email: '', password: '' });
     } catch (error) {
-      alert("Failed to create admin: " + error.message);
+      // alert("Failed to create admin: " + error.message);
+      toast.error("Failed to create admin:" + error.message);
     } finally {
       await signOut(secondaryAuth);
       await deleteApp(secondaryApp);
@@ -1049,7 +1051,8 @@ export default function AdminDashboard() {
     const newPassword = window.prompt(`Enter new password for ${empName}:`);
     if (newPassword && newPassword.trim() !== '') {
       await updateDoc(doc(db, "employees", id), { password: newPassword });
-      alert(`Password reset successful!`);
+      toast.success(`Password reset successful!`);
+      
     }
   };
 
@@ -1450,7 +1453,7 @@ export default function AdminDashboard() {
             status: newStatus,
             completedAt: newStatus === 'Completed' ? serverTimestamp() : null 
           });
-          alert(`Status updated to ${newStatus}`);
+          toast.success(`Status updated to ${newStatus}`);
         } catch (error) {
           // Local Storage fallback...
           let adminTasks = JSON.parse(localStorage.getItem('permanentTasks')) || [];
@@ -1460,7 +1463,7 @@ export default function AdminDashboard() {
             adminTasks[index].completedAt = newStatus === 'Completed' ? new Date().toISOString() : null;
             localStorage.setItem('permanentTasks', JSON.stringify(adminTasks));
             setTasksList([...adminTasks]);
-            alert(`Status updated to ${newStatus}`);
+            toast.success(`Status updated to ${newStatus}`);
           }
         }
       };
@@ -1516,7 +1519,7 @@ export default function AdminDashboard() {
         <td colSpan="7" className="text-center py-20">
           <div className="flex flex-col items-center justify-center text-gray-400">
             <p className="text-xl font-bold text-gray-600">No tasks found!</p>
-            <p className="text-sm">No assignments are available for this date <span className='font-bold text-green-500'>{selectedDate || 'selected'} </span></p>
+            <p className="text font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">No assignments are available </p>
           </div>
         </td>
       </tr>

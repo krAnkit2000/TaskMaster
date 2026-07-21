@@ -3,6 +3,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import UserTaskView from './pages/UserTaskView';
 import Login from './pages/Login';
 import AdminLogin from './pages/AdminLogin';
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -11,7 +12,9 @@ export default function App() {
   const isAdmin = userCred.role === 'admin' || userCred.role === 'superadmin';
 
   return (
+    
     <BrowserRouter>
+    <Toaster position="top-right"  autoClose={3000}/>
       <Routes>
         {/* 1. Default Route (/) - Login check aur redirect */}
         <Route path="/" element={
