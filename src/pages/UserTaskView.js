@@ -6,7 +6,7 @@ export default function UserTaskView() {
   const [tasks, setTasks] = useState([]);
   const [view, setView] = useState('overview');
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
-  const [loginCred, setLoginCred] = useState(JSON.parse(localStorage.getItem('userCred')) || { email: '', password: '' });
+  const [loginCred, setLoginCred] = useState(JSON.parse(localStorage.getItem('userCred')) || {name: '', email: '', password: '' });
   const [remarks, setRemarks] = useState({});
   const [expandedTasks, setExpandedTasks] = useState({});
 
@@ -129,15 +129,31 @@ export default function UserTaskView() {
    
       <div className="w-64 bg-slate-900 text-white p-6">
            <a href="/" className="block cursor-pointer">
-        <div className="p-1 mb-12 text-2xl font-bold border-b border-slate-800 tracking-wider flex items-center gap-2">
+        <div className="p-1 mb-7 text-2xl font-bold border-b border-slate-800 tracking-wider flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white text-lg">T</div>
           TaskMaster
         </div>
+
+        
         </a>
+       
+        <div className="flex items-center gap-3 mb-2">
+          <img
+            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${loginCred.email || loginCred.name || "guest"
+              }`}
+            alt="User"
+            className="w-10 h-10 rounded-full"
+          />
+          <div>
+            <p className="font-semibold">{loginCred.email ? loginCred.email.split('@')[0] : 'User'}</p>
+          </div>
+
+</div>
+
         <div className="space-y-4">
-          <button onClick={() => setView('overview')} className={`w-full text-left p-3 rounded-lg text-sm font-semibold transition ${view === 'overview' ? 'bg-blue-600' : 'text-gray-400 hover:text-white'}`}>Dashboard Overview</button>
-          <button onClick={() => setView('myTasks')} className={`w-full text-left p-3 rounded-lg text-sm font-semibold transition ${view === 'myTasks' ? 'bg-blue-600' : 'text-gray-400 hover:text-white'}`}>My Tasks</button>
-          <button onClick={handleLogout} className="w-full text-left p-3 text-red-400 text-sm font-semibold hover:bg-red-900/20 rounded-lg transition">Logout</button>
+          <button onClick={() => setView('overview')} className={`w-full text-left p-3 rounded-lg text-sm font-semibold transition ${view === 'overview' ? 'bg-blue-600' : 'text-gray-400 hover:text-white'}`}> 🏠  Dashboard Overview</button>
+          <button onClick={() => setView('myTasks')} className={`w-full text-left p-3 rounded-lg text-sm font-semibold transition ${view === 'myTasks' ? 'bg-blue-600' : 'text-gray-400 hover:text-white'}`}>📋  My Tasks</button>
+          <button onClick={handleLogout} className="w-full text-left p-3 text-red-400 text-sm font-semibold hover:bg-red-900/20 rounded-lg transition"> ⏻ Logout</button>
        
     
         </div>

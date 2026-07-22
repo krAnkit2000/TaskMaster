@@ -866,11 +866,39 @@ export default function AdminDashboard() {
 
   // ✅ CURRENT ADMIN KA UID - Isi se filter hoga sab kuch
   const currentAdminUid = auth.currentUser?.uid;
+const [adminProfile, setAdminProfile] = useState({
+  email: '',
+  name: ''
+});
+
+
 
   // === FETCH REAL-TIME DATA (ONLY THIS ADMIN'S DATA) ===
   useEffect(() => {
     if (!currentAdminUid) return; // Admin login nahi hai to kuch fetch mat karo
 
+
+    
+
+
+
+
+
+
+    //
+
+
+
+
+    const user = auth.currentUser;
+
+  if (user) {
+    setAdminProfile({
+      email: user.email,
+      name: user.displayName || user.email.split('@')[0]
+    });
+  }
+    
     // 1. Archive tasks - SIRF is admin ke createdBy wale
     const qArchive = query(
       collection(db, "archive_tasks"),
@@ -1093,7 +1121,28 @@ export default function AdminDashboard() {
           TaskMaster
         </div>
         </a>
+
+
+        
         <nav className="flex-1 p-4 space-y-2">
+           <div className="flex items-center gap-3 mb-2">
+  <img
+  src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${
+    adminProfile.email || adminProfile.name || "guest"
+  }`}
+  alt="Admin"
+  className="w-10 h-10 rounded-full"
+/>
+  <div>
+   <p className="font-semibold">
+  {adminProfile.email 
+    ? adminProfile.email.split('@')[0] 
+    : "Admin"}
+</p>
+   
+  </div>
+  </div>
+
           <button
             onClick={() => setActiveTab('dashboard')}
             className={`w-full text-left p-3 rounded-lg font-medium transition-all duration-300
