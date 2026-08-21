@@ -1,0 +1,190 @@
+/* Main Dashboard Responsive Fix */
+
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+
+/* Sidebar Responsive */
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+
+/* Tablet */
+@media (max-width: 1024px) {
+
+  .sidebar {
+    width: 220px;
+  }
+
+  .main-content {
+    padding: 10px;
+  }
+
+  table {
+    min-width: 850px;
+  }
+
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .admin-dashboard {
+    flex-direction: column;
+  }
+
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+  }
+
+
+  .main-content {
+    width: 100%;
+    padding: 8px;
+  }
+
+
+  /* Header */
+  header h1 {
+    font-size: 18px !important;
+  }
+
+
+  header p {
+    font-size: 12px;
+  }
+
+
+  /* Dashboard cards */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+
+  /* Forms */
+  input,
+  textarea,
+  select {
+    font-size: 14px;
+  }
+
+
+  /* Table scroll */
+  .overflow-y-auto,
+  .overflow-x-auto {
+    overflow-x: auto !important;
+  }
+
+
+  table {
+    min-width: 900px;
+  }
+
+
+}
+
+
+/* Small Mobile */
+@media (max-width:480px){
+
+  .sidebar {
+    padding:10px;
+  }
+
+
+  .sidebar button {
+    font-size:13px;
+    padding:10px;
+  }
+
+
+  .main-content {
+    padding:5px;
+  }
+
+
+  .rounded-xl {
+    border-radius:12px;
+  }
+
+
+  .text-3xl {
+    font-size:22px !important;
+  }
+
+
+  .text-xl {
+    font-size:17px !important;
+  }
+
+}
+
+
+/* Prevent table breaking */
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+
+td,th {
+  white-space:nowrap;
+}
+
+
+/* Better mobile task cards */
+@media(max-width:768px){
+
+  .lg\:col-span-2 {
+    grid-column:auto !important;
+  }
+
+
+  .max-h-\[600px\],
+  .max-h-\[450px\] {
+    max-height:500px !important;
+  }
+
+}
+
+
+/* Sidebar profile mobile */
+@media(max-width:768px){
+
+  nav > div:first-child {
+    justify-content:center;
+  }
+
+}
+
+
+/* Buttons responsive */
+button {
+  max-width:100%;
+}
+
+
+/* Create account form */
+@media(max-width:640px){
+
+  .grid-cols-2 {
+    grid-template-columns:1fr !important;
+  }
+
+}

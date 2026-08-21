@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { collection, onSnapshot, query, deleteDoc, updateDoc, doc } from 'firebase/firestore';
@@ -9,7 +5,6 @@ import { collection, onSnapshot, query, deleteDoc, updateDoc, doc } from 'fireba
 const ManageTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [search, setSearch] = useState("");
-  
   const [delSno, setDelSno] = useState("");
   const [delEmail, setDelEmail] = useState("");
   const [reSno, setReSno] = useState("");
@@ -23,7 +18,6 @@ const ManageTasks = () => {
     return () => unsub();
   }, []);
 
-  // Filtered tasks (Search ke liye)
   const filteredTasks = tasks.filter(task => 
     task.email.toLowerCase().includes(search.toLowerCase()) || 
     task.title.toLowerCase().includes(search.toLowerCase())
@@ -31,7 +25,6 @@ const ManageTasks = () => {
 
   const handleDelete = async () => {
     const index = parseInt(delSno) - 1;
-    // Yeh check karein ki kya task wahan exist karta hai
     if (tasks[index]) {
       if (tasks[index].email === delEmail) {
         await deleteDoc(doc(db, "tasks", tasks[index].id));
@@ -49,10 +42,7 @@ const ManageTasks = () => {
     const index = parseInt(reSno) - 1;
     if (tasks[index]) {
       try {
-        await updateDoc(doc(db, "tasks", tasks[index].id), { 
-          email: newEmail,
-          lastAction: "Reassigned" 
-        });
+        await updateDoc(doc(db, "tasks", tasks[index].id), { email: newEmail, lastAction: "Reassigned" });
         alert("Task Reassigned Successfully!");
         setReSno(""); setNewEmail("");
       } catch (error) {
@@ -65,7 +55,6 @@ const ManageTasks = () => {
 
   return (
     <div className="space-y-6 p-6">
-      {/* 1. Forms Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-bold mb-4 border-b pb-2">Delete Task</h2>
@@ -82,7 +71,6 @@ const ManageTasks = () => {
         </div>
       </div>
 
-      {/* 2. All Manage Summary with Scroll and Search */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">All Manage Summary</h2>
@@ -106,16 +94,8 @@ const ManageTasks = () => {
                   <td className="p-3 font-semibold">{index + 1}</td>
                   <td className="p-3">{task.title}</td>
                   <td className="p-3 text-blue-600 font-medium">{task.email}</td>
-                  <td className="p-3">
-                    <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-bold">
-                      {task.lastAction || 'Created'}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${task.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                      {task.status || 'Pending'}
-                    </span>
-                  </td>
+                  <td className="p-3"><span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-bold">{task.lastAction || 'Created'}</span></td>
+                  <td className="p-3"><span className={`px-2 py-1 rounded-full text-xs font-bold ${task.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{task.status || 'Pending'}</span></td>
                 </tr>
               ))}
             </tbody>
